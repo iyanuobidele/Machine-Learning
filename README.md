@@ -10,7 +10,7 @@ This ANN uses the back propagation algorithm for learning, with momentum and wei
 
 This code also plots a graph at the end of each run. Its very intuitive, once you understand how ANN works.
 
-# Support Vector Machine Implementation using Python's SCIKIT-LEARN svm package
+# Support Vector Machine Implementation using Python's SCIKIT-LEARN svm package {svm-exp.py}
 I carried out a binary classification on the spam dataset from https://archive.ics.uci.edu/ml/machine-learning-databases/spambase/
 
 I have implemented the linear SVM, which is pretty straightforward. Also, I have carried out a 10-fold cross validation to determine the best C parameter (i.e the C with the highest average accuracy)
