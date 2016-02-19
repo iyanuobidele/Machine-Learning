@@ -84,9 +84,9 @@ class Perceptron(object):
 
 		for i in range(0, len(values)):
 			if values[i][1][1] == values[i][0][1][0]:
-				total_eg1 += 1  												# Total number of [class 1,decision-Value] pairs received for classification
+				total_eg1 += 1  					# Total number of [class 1,decision-Value] pairs received for classification
 			if values[i][1][1] == values[i][0][1][1]:
-				total_eg2 += 1  												# Total number of [class 2,decision-Value] pairs received for classification
+				total_eg2 += 1  					# Total number of [class 2,decision-Value] pairs received for classification
 
 		for i in range(0, len(values)):
 			if values[i][1][1] == values[i][0][1][0] and values[i][2][1] >= 0:	# increases counter if target is class_1 and d-v is >=0
@@ -146,8 +146,8 @@ class Perceptron(object):
 				np.random.shuffle(new)			# shuffle ndarray
 				
 				length = len(new)
-				for i in range(0, length):  																				# loop through all the training examples
-					temp = np.dot(new[i][1:17],w) + bias  																	# dot product of all training examples and weight + bias
+				for i in range(0, length):  									# loop through all the training examples
+					temp = np.dot(new[i][1:17],w) + bias  							# dot product of all training examples and weight + bias
 					values.append([['p', [eg1, eg2]], ['target', new[i][0]], ['dv', temp], ['weights', w],['bias', bias]])  # appending all the necessary details, needed for classification
 						
 				sgn = self.signum(values)  # calling the signum function that returns the classification detail as a dictionary
@@ -156,7 +156,7 @@ class Perceptron(object):
 				print "Using random w's, the initial accuracy of perceptron " + sgn['perceptron'] + " is: " + str(sgn['accuracy'])
 				
 				
-				if sgn['accuracy'] == 1 or sgn['accuracy'] > self.test[sgn['perceptron']]['a']:																				# if with first random w we get an acc of 1, we need to save.
+				if sgn['accuracy'] == 1 or sgn['accuracy'] > self.test[sgn['perceptron']]['a']:				# if with first random w we get an acc of 1, we need to save.
 					self.test[sgn['perceptron']] = {"w":sgn['weight'],"b":sgn['bias'],"a":sgn['accuracy']}
 					with open(r'C:\Users\Iyanu\Desktop\Python\ML\data\final.json', 'w') as f:
 						json.dump(self.test, f)
@@ -181,29 +181,29 @@ class Perceptron(object):
 		class_2: Alphabet 2. e.g D in example above. 
 		"""
 		#############################################################################################################################################
-		# Here we basically update the weights using eta and the training examples related to the perceptron, and re run signum					    #
-		# We do this depending on the amount of stipulated iterations, for each perceptron															#
+		# Here we basically update the weights using eta and the training examples related to the perceptron, and re run signum			  #
+		# We do this depending on the amount of stipulated iterations, for each perceptron							#
 		#############################################################################################################################################
 		for count in range(n):
 			print "Epoch " + str(count+1)
 			new_df = self.df.loc[self.df['target'] == class_1].append(self.df.loc[self.df['target'] == class_2])
-			tr_new = np.array(new_df)  																					# reindex(shuffle) the datafile
+			tr_new = np.array(new_df)  		# reindex(shuffle) the datafile
 			np.random.shuffle(tr_new)
-			for ii in range(len(tr_new)):  																				# loop to choose from the training example
-				if tr_new[ii][0] == class_1:  																				# condition to handle all w0
+			for ii in range(len(tr_new)):  						# loop to choose from the training example
+				if tr_new[ii][0] == class_1:  					# condition to handle all w0
 					target = 1
 				if tr_new[ii][0] == class_2:
 					target = -1
-				for i in range(17):  																					# To apply eta on all weights including bias
+				for i in range(17):  	# To apply eta on all weights including bias
 					if i == 0:
-						x = 1																							# x0 for w0
+						x = 1			# x0 for w0
 					if i != 0:
-						x = tr_new[ii][i]  																					# x1......x16
-					w_b[i] += round((self.eta*x*target),2)																# Learning Algorithm
+						x = tr_new[ii][i]  			# x1......x16
+					w_b[i] += round((self.eta*x*target),2)		# Learning Algorithm
 				
 				new_values = []
-				for o in range(0, len(tr_new)):  																		# loop through all the training examples
-					temp = np.dot(tr_new[o][1:17],w_b[1:17]) + w_b[0]  																	# dot product of all training examples and weight + bias
+				for o in range(0, len(tr_new)):  							# loop through all the training examples
+					temp = np.dot(tr_new[o][1:17],w_b[1:17]) + w_b[0]  				# dot product of all training examples and weight + bias
 					new_values.append([['p', [class_1, class_2]], ['target', tr_new[o][0]], ['dv', temp], ['weights', w_b[1:17]],['bias', w_b[0]]])  # appending all the necessary details, needed for classification
 				new_sgn = self.signum(new_values)
 								
@@ -212,17 +212,17 @@ class Perceptron(object):
 					print p +" will be saved with an accuracy of: "+ str(new_sgn['accuracy']) + "\n"
 					with open(r'C:\Users\Iyanu\Desktop\Python\ML\data\final.json', 'w') as f:
 						json.dump(self.test, f)
-					break																						# no need to go through training examples, since sgn has improved to what we want
+					break				# no need to go through training examples, since sgn has improved to what we want
 				else:
-					new_values = []																				# else
+					new_values = []			# else
 			if new_sgn['accuracy'] > 0.8 and new_sgn['accuracy'] > self.test[new_sgn['perceptron']]['a']:
 				self.test[p] = {"w":new_sgn['weight'],"b":new_sgn['bias'],"a":new_sgn['accuracy']}
 				with open(r'C:\Users\Iyanu\Desktop\Python\ML\data\final.json', 'w') as f:
 					json.dump(self.test, f)
 				print p +" will be saved with an accuracy of: "+ str(new_sgn['accuracy']) + "\n"
-				break																								# break out of this function to the next perceptron
+				break		# break out of this function to the next perceptron
 			else:
-				w_b = self.rand_weight(17)																		# the last known weights should be base weights, by SGD standard.
+				w_b = self.rand_weight(17)		# the last known weights should be base weights, by SGD standard.
 		
 	
 	def training_acc(self):
@@ -237,35 +237,35 @@ class Perceptron(object):
 	# All pairs classification method is used for prediction		  #
 	###################################################################
 	def prediction(self):
-		tr_new = np.array(self.d)																				# transferring all data into an ndarray
+		tr_new = np.array(self.d)	# transferring all data into an ndarray
 		counter = 0
 		target = []
 		prediction = []
-		for o in range(0, len(tr_new)):  																		# loop through all the training examples
+		for o in range(0, len(tr_new)):  			# loop through all the training examples
 			# start testing w/ all 325 perceptrons 
 			a = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 			for row in range(0,25):
-				for col in range(row+1, 26):																	# loop through all perceptrons
+				for col in range(row+1, 26):		# loop through all perceptrons
 					eg1 = self.lookup(row)
 					eg2 = self.lookup(col)
 					p = eg1+ " VS " +eg2
-					# print p											# perceptron name						
+					# print p			# perceptron name						
 					# print tr_new[0][0]								# target
-					temp = np.dot(tr_new[o][1:17],self.test[p]['w']) + self.test[p]['b']						# dot product of all training examples and weight + bias
+					temp = np.dot(tr_new[o][1:17],self.test[p]['w']) + self.test[p]['b']		# dot product of all training examples and weight + bias
 					
-					if temp >= 0:																				# condition for classification
-						a[row]+=1																				# this is a vote for C in C VS B. if decision value is >= 0
+					if temp >= 0:		# condition for classification
+						a[row]+=1	# this is a vote for C in C VS B. if decision value is >= 0
 					else:
-						a[col]+=1																				# this is a vote for B in the e.g above
+						a[col]+=1	# this is a vote for B in the e.g above
 				
-			predict = self.lookup(a.index(max(a)))																# Gets the index with the most votes and gets the alphabet name
+			predict = self.lookup(a.index(max(a)))	# Gets the index with the most votes and gets the alphabet name
 			# print tr_new[o][0] +" is "+ predict
-			target.append(tr_new[o][0])																			# append all the actual into an array
-			prediction.append(predict)																			# append all the predicted into an array
+			target.append(tr_new[o][0])			# append all the actual into an array
+			prediction.append(predict)			# append all the predicted into an array
 			if predict == tr_new[o][0]:
-				counter+=1																						# counter for number of times we predicted right
+				counter+=1				# counter for number of times we predicted right
 		
-		accuracy = float(counter)/len(tr_new)																	# accuracy calculation
+		accuracy = float(counter)/len(tr_new)		# accuracy calculation
 		print " Accuracy is: "+ str(accuracy) +"\n"
 		
 		###################
