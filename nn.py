@@ -77,27 +77,18 @@ class Neural(object):
         previous_deltas = self.delta_hidden
         deltas = {}     # store all deltas dynamically. 5 hidden layer(+ bias) means 6 keys. e.g 0:[a list of 26 delta values representing each weight]
         temp_arr = []
-        # if first time training, no previous delta
-        if len(previous_deltas) == 0:
-            for each in range(len(h_output)):
-                for a in range(len(h_weight[each])):
+        for each in range(len(h_output)):
+            for a in range(len(h_weight[each])):
+                if len(previous_deltas) == 0:    # if first time training, no previous delta
                     each_delta = self.eta * output_error_terms[a] * h_output[each]
-                    h_weight[each][a] += each_delta                                 # weight update
-                    temp_arr.append(each_delta)
-                deltas[each] = temp_arr
-                temp_arr = []
-            self.delta_hidden = deltas
-            self.hidden_weights = h_weight
-        else:
-            for each in range(len(h_output)):
-                for a in range(len(h_weight[each])):
+                else:
                     each_delta = (self.eta * output_error_terms[a] * h_output[each]) + (self.momentum * previous_deltas[each][a])
-                    h_weight[each][a] += each_delta
-                    temp_arr.append(each_delta)
-                deltas[each] = temp_arr
-                temp_arr = []
-            self.delta_hidden = deltas
-            self.hidden_weights = h_weight
+                h_weight[each][a] += each_delta                          # weight update
+                temp_arr.append(each_delta)
+            deltas[each] = temp_arr
+            temp_arr = []
+        self.delta_hidden = deltas
+        self.hidden_weights = h_weight
         # print "All hidden to output weights updated!"
 
         # Second: Update all weights from input to hidden layer
@@ -107,30 +98,20 @@ class Neural(object):
         i_temp_arr = []
 
         new = np.delete(hidden_error_terms, 0)          # since no connection to the bias from the input layer.
-        # if first time training, no previous delta
-        if len(i_previous_deltas) == 0:
-            for b in range(len(tr_eg)):                 # 17 input each with its unique noOfHidden layer weights
-                for bb in range(len(i_weight[b])):      # starting from 1 because the bias at the hidden layer level is not connected downwards
-                    i_each_delta = (self.eta * new[bb] * tr_eg[b])
-                    i_weight[b][bb] += i_each_delta
-                    i_temp_arr.append(i_each_delta)
-                    i_each_delta = 0
-                i_deltas[b] = i_temp_arr
-                i_temp_arr = []
-            self.delta_input = i_deltas
-            self.input_weights = i_weight
-        else:
-            for b in range(len(tr_eg)):                  # 17 input each with its unique noOfHidden layer weights
-                for bb in range(len(i_weight[b])):       # starting from 1 because the bias at the hidden layer level is not connected downwards
+        for b in range(len(tr_eg)):                 # 17 input each with its unique noOfHidden layer weights
+            for bb in range(len(i_weight[b])):      # starting from 1 because the bias at the hidden layer level is not connected downwards
+                if len(i_previous_deltas) == 0:
+                    i_each_delta = (self.eta * new[bb] * tr_eg[b])  # if first time training, no previous delta
+                else:
                     i_each_delta = (self.eta * new[bb] * tr_eg[b]) + (self.momentum * i_previous_deltas[b][bb])
-                    i_weight[b][bb] += i_each_delta
-                    i_temp_arr.append(i_each_delta)
-                i_deltas[b] = i_temp_arr
-                i_temp_arr = []
-            self.delta_input = i_deltas
-            self.input_weights = i_weight
-
-        #print "All Weights Updated!"
+                i_weight[b][bb] += i_each_delta
+                i_temp_arr.append(i_each_delta)
+                i_each_delta = 0
+            i_deltas[b] = i_temp_arr
+            i_temp_arr = []
+        self.delta_input = i_deltas
+        self.input_weights = i_weight
+        # print "All Weights Updated!"
 
     def feed_forward(self,input):			# Function responsible for forward propagation
         """
