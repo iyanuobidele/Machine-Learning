@@ -1,7 +1,7 @@
 # Machine-Learning
 All experiments, including Naive Bayes classifiers, SVM Models, and Multiclass Artificial Neural Network
 
-# Gaussian Naive Bayes
+# Gaussian Naive Bayes {naive-bayes.py}
 Explanation coming soon..
 
 # Artificial Neural Network     {nn.py}
