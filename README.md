@@ -1,6 +1,9 @@
 # Machine-Learning
 All experiments, including Naive Bayes classifiers, SVM Models, and Multiclass Artificial Neural Network
 
+# Gaussian Naive Bayes
+Explanation coming soon..
+
 # Artificial Neural Network     {nn.py}
 This ANN has one input layer, one hidden layer and one output layer The ANN classifies the letter recognition dataset from: http://archive.ics.uci.edu/ml/datasets/Letter+Recognition Which has 20,000 instances with 16 features each.
 
