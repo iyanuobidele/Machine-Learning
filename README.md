@@ -1,5 +1,5 @@
 # Machine-Learning
-All experiments, including Naive Bayes classifiers, SVM Models, and Multiclass Artificial Neural Network
+All Supervised Learning experiments; including Gaussian Naive Bayes classifiers, Perceptrons, SVM Models, and Multiclass Artificial Neural Network and Unsupervised Learning experiment using K-means algorithm and K-NN
 
 # Gaussian Naive Bayes Classifier {naive-bayes.py}
 I have used the same spambase dataset used by the SVM classifier
