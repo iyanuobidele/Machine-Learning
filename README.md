@@ -1,8 +1,10 @@
 # Machine-Learning
 All experiments, including Naive Bayes classifiers, SVM Models, and Multiclass Artificial Neural Network
 
-# Gaussian Naive Bayes {naive-bayes.py}
-Explanation coming soon..
+# Gaussian Naive Bayes Classifier {naive-bayes.py}
+I have used the same spambase dataset used by the SVM classifier
+For this task, I performed a supervised learning using Naive Bayes assuming a Gaussian distribution and a conditional independence of the attributes.
+The code is pretty intuitive to follow, I have also added comment on every step.
 
 # Artificial Neural Network     {nn.py}
 This ANN has one input layer, one hidden layer and one output layer The ANN classifies the letter recognition dataset from: http://archive.ics.uci.edu/ml/datasets/Letter+Recognition Which has 20,000 instances with 16 features each.
