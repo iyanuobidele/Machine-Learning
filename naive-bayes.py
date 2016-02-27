@@ -10,7 +10,7 @@ from sklearn import metrics
 class GNaiveBayes(object):
     def __init__(self):
         # Initialise some self variables
-        self.model = {}             #  {feature index: [+ve mean, +ve stddev, -ve mean, -ve stddev], ...., }
+        self.model = {}             # { feature index: [+ve mean, +ve stddev, -ve mean, -ve stddev], ...., }
         self.PofSpam = 0
         self.PofNotSpam = 0
         self.test = []
@@ -49,29 +49,29 @@ class GNaiveBayes(object):
                     neg.append(self.train.T[i][ii])     # negative class features (No Spam)
 
             # compute the means and stddev
-            print len(pos), len(neg)
+            # print len(pos), len(neg)
             pos_mean = np.mean(pos)                         # spam mean calculation
             if math.isnan(np.std(pos)) or np.std(pos) == 0: # check if spam stddev is nan or 0
                 pos_stddev = 0.000000000001
             else:
                 pos_stddev = np.std(pos)
-            neg_mean = np.mean(neg)                         # notSpam mean calculation
-            if math.isnan(np.std(neg)) or np.std(neg) == 0: # check if notSpam stddev is nan or 0
+            neg_mean = np.mean(neg)                             # notSpam mean calculation
+            if math.isnan(np.std(neg)) or np.std(neg) == 0:     # check if notSpam stddev is nan or 0
                 neg_stddev = 0.000000000001
             else:
                 neg_stddev = np.std(neg)
 
             # positive and negative probabilities
             if self.PofNotSpam == 0:                                    # to make this is only done once
-                self.PofSpam = float(len(pos))/len(self.train)
-                self.PofNotSpam = float(len(neg))/len(self.train)
+                self.PofSpam = float(len(pos))/len(self.train)          # probability of spam class
+                self.PofNotSpam = float(len(neg))/len(self.train)       # probabilty of not spam class
 
             # empty arrays before next loop
             pos = []
             neg = []
             # insert into model dictionary
             self.model[i] = [pos_mean, pos_stddev, neg_mean, neg_stddev]
-        print self.model
+        # print self.model
         self.prediction()
 
     def prediction(self):
@@ -80,8 +80,9 @@ class GNaiveBayes(object):
         prob_of_negatives = []
         predicted = []
         counter = 0
-        for a in range(len(self.test)):
-            for aa in range(len(self.test[a][:-1])):
+        for a in range(len(self.test)):                 # loop through all test examples
+            for aa in range(len(self.test[a][:-1])):    # inner loop through features in an example
+
                 # for each feature value, we need to calculate the p(fi = x | +) and p(fi = x | -)
 
                 # p(fi = x | +)
@@ -102,23 +103,24 @@ class GNaiveBayes(object):
                 temp4 = 0
                 temp5 = 0
 
-            print len(prob_of_negatives), len(prob_of_positives)
+            # print len(prob_of_negatives), len(prob_of_positives)
 
-            # positive
+            # probability that the particular example is positive
             positive = np.log(self.PofSpam) * np.log(np.prod(np.array(prob_of_positives)))
 
-            # negative
+            # probability that the particular example is negative
             negative = np.log(self.PofNotSpam) * np.log(np.prod(np.array(prob_of_negatives)))
 
-            print positive, negative, np.argmax([positive, negative])
+            # print positive, negative, np.argmax([positive, negative])
 
-            # accuracy
+            # accuracy calculation
             classification = np.argmax([positive, negative])
             predicted.append(classification)
 
             if classification == self.test[a][-1]:
                 counter += 1
 
+            # empty the array before next loop
             prob_of_negatives = []
             prob_of_positives = []
 
