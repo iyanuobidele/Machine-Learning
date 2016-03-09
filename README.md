@@ -1,6 +1,8 @@
 # Machine-Learning
 All Supervised Learning experiments; including Gaussian Naive Bayes classifiers, Perceptrons, SVM Models, and Multiclass Artificial Neural Network and Unsupervised Learning experiment using K-means algorithm and K-NN
 
+# Clustering Using K-Means Algorithm and Euclidean Distance {k-means.py}
+
 # Gaussian Naive Bayes Classifier {naive-bayes.py}
 I have used the same spambase dataset used by the SVM classifier
 For this task, I performed a supervised learning using Naive Bayes assuming a Gaussian distribution and a conditional independence of the attributes.
