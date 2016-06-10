@@ -1,0 +1,92 @@
+function [samples,imagenames] = combine_return(PortlandFolder, OtherFolder, sampleType, who)
+
+% Check to make sure that folder actually exists.  Warn user if it doesn't.
+if ~isdir(PortlandFolder) || ~isdir(OtherFolder) 
+  errorMessage = sprintf...
+      ('Error: The following folders do not exist:\n%s\n%s',...
+      PortlandFolder,OtherFolder);
+  uiwait(warndlg(errorMessage));
+  return;
+end
+
+% Get size of pedestrian sampleType samples
+imagesFiles = dir(fullfile(OtherFolder, '*.jpg'));
+% Get size of back samples in PortlandDogWalking folder
+Sample_in_Folder = return_size(PortlandFolder,sampleType,who);
+% Total size of expected back samples
+% size = length(imagesFiles) + Sample_in_Folder;
+% pre-allocate array size based on info above
+% 20736 is not arbitrary, its the number of columns returned when a 200x200
+% image is passed into extractHOGFeatures(). The choice of resizing all 
+% images to 200x200 is however arbitrary. 
+
+if strcmp(strtrim(who),'dog')
+    Files = dir(fullfile(PortlandFolder, '*.jpg'));
+    lFiles = dir(fullfile(PortlandFolder, '*.labl'));
+    
+    temp_2 = zeros(Sample_in_Folder,20736);
+    temp_2_img = repmat({'F'},Sample_in_Folder,1);
+
+    counter2 = 1;
+    for j = 1 : length(Files)
+      ImagesName = Files(j).name;
+      LabelName = lFiles(j).name;
+
+      ImageName = fullfile(PortlandFolder, ImagesName);
+      LabelName = fullfile(PortlandFolder, LabelName);
+      if strcmp(return_label(LabelName,who),sampleType)
+          bbox_dimension = prasing(LabelName, strtrim(who));
+          im = imresize(imcrop(imread(ImageName), bbox_dimension), [200,200]);
+          [hog,~] = extractHOGFeatures(im);
+          temp_2(counter2,:) = hog;
+          temp_2_img(counter2) = {ImageName};
+          counter2 = counter2 + 1;
+      end
+    end
+
+    samples = temp_2;
+    imagenames = temp_2_img;
+    
+else
+    temp_1 = zeros(length(imagesFiles),20736);
+    temp_1_img = repmat({'F'},length(imagesFiles),1);
+    
+    counter = 1;
+    % create Hog features for pedestrian back/right/left/front folder
+    for k = 1 : length(imagesFiles)
+      baseImagesName = imagesFiles(k).name;
+      fullImageName = fullfile(OtherFolder, baseImagesName);  
+      im = imresize(imread(fullImageName), [200,200]);
+      [hog,~] = extractHOGFeatures(im);
+      temp_1(counter,:) = hog;
+      temp_1_img(counter) = {fullImageName};
+      counter = counter + 1;
+    end
+
+    % create Hog features for samples in PortlandDogwalking Folder
+    Files = dir(fullfile(PortlandFolder, '*.jpg'));
+    lFiles = dir(fullfile(PortlandFolder, '*.labl'));
+
+    temp_2 = zeros(Sample_in_Folder,20736);
+    temp_2_img = repmat({'F'},Sample_in_Folder,1);
+
+    counter2 = 1;
+    for j = 1 : length(Files)
+      ImagesName = Files(j).name;
+      LabelName = lFiles(j).name;
+
+      ImageName = fullfile(PortlandFolder, ImagesName);
+      LabelName = fullfile(PortlandFolder, LabelName);
+      if strcmp(return_label(LabelName,who),sampleType)
+          bbox_dimension = prasing(LabelName, strtrim(who));
+          im = imresize(imcrop(imread(ImageName), bbox_dimension), [200,200]);
+          [hog,~] = extractHOGFeatures(im);
+          temp_2(counter2,:) = hog;
+          temp_2_img(counter2) = {ImageName};
+          counter2 = counter2 + 1;
+      end
+    end
+
+    samples = [temp_1;temp_2];
+    imagenames = [temp_1_img;temp_2_img];
+end
